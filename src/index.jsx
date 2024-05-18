@@ -27,7 +27,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
 ]);
 
 createRoot(document.querySelector('#app')).render(
