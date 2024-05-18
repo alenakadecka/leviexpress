@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './style.css';
 
 const CityOptions = ({ cities }) => {
-  console.log(cities);
+  //console.log(cities);
   return (
     <>
       <option value="">Vyberte</option>
@@ -16,7 +16,7 @@ const CityOptions = ({ cities }) => {
 };
 
 const DatesOptions = ({ dates }) => {
-  console.log(dates);
+  //console.log(dates);
   return (
     <>
       <option value="">Vyberte</option>
@@ -36,16 +36,7 @@ export const JourneyPicker = ({ onJourneyChange }) => {
   const [toCity, setToCity] = useState('');
   const [date, setDate] = useState('');
   const [cities, setCities] = useState([]);
-  const [dates, setDates] = useState([
-    {
-      dateBasic: '17.05.2024',
-      dateCs: 'pá 17. květen 2024',
-    },
-    {
-      dateBasic: '18.05.2024',
-      dateCs: 'so 18. květen 2024',
-    },
-  ]);
+  const [dates, setDates] = useState([]);
 
   useEffect(() => {
     const fetchDataCities = async () => {
@@ -71,11 +62,19 @@ export const JourneyPicker = ({ onJourneyChange }) => {
     fetchDataDate();
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(fromCity);
+
+    const response = await fetch(
+      `https://apps.kodim.cz/daweb/leviexpress/api/journey?fromCity=${fromCity}&toCity=${toCity}&date=${date}`,
+    );
+
+    const data = await response.json();
+    onJourneyChange(data.results);
+
+    /*     console.log(fromCity);
     console.log(toCity);
-    console.log(date);
+    console.log(date); */
   };
 
   return (
@@ -131,7 +130,11 @@ export const JourneyPicker = ({ onJourneyChange }) => {
             </select>
           </label>
           <div className="journey-picker__controls">
-            <button className="btn" type="submit">
+            <button
+              disabled={!fromCity || !toCity || !date}
+              className="btn"
+              type="submit"
+            >
               Vyhledat spoj
             </button>
           </div>
